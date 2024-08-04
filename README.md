@@ -1,30 +1,29 @@
-# vue-chat
+# Live Chat App
 
-## Project setup
-```
-npm install
-```
+## Description
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+A real-time chat application built with Vue.js and Socket.IO. in an ExpressJS Server, This project demonstrates how to create a fully functional chat room with real-time message exchange and user presence tracking.
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### Features
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- **Real-time Messaging**: Send and receive messages instantly using Socket.IO.
+- **User Presence Tracking**: Display the number of active users in the chat room.
+- **Channel Selection**: Choose from multiple channels to chat in.
+- **Message Typing Indicator**: Show when users are typing.
+- **Error Handling**: Display user-friendly error messages for empty messages.
+- **Dynamic Timestamp**: Update and display the current time in the chat interface.
 
-Vue.js Chat Application
-A real-time chat application built with Vue.js and Socket.IO. This project demonstrates how to create a fully functional chat room with real-time message exchange and user presence tracking.
+### Tech Stack
 
-Features
-Real-time Messaging: Send and receive messages instantly using Socket.IO.
-User Presence Tracking: Display the number of active users in the chat room.
-Channel Selection: Choose from multiple channels to chat in.
-Message Typing Indicator: Show when users are typing.
-Error Handling: Display user-friendly error messages for empty messages.
-Dynamic Timestamp: Update and display the current time in the chat interface.
+- **Frontend**: Vue.js, Spectre.css
+- **Backend**: ExpressJS
+
+
+### Contribution
+
+Feel free to contribute by opening issues or submitting pull requests. Your contributions are highly appreciated!
+
+### License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
