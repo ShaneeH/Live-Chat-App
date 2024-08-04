@@ -1,0 +1,67 @@
+.panel {
+    margin: 0 auto;
+    /* Center the panel */
+    max-width: 60%;
+    /* Allow full width on small screens */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add some shadow for depth */
+}
+
+.panel-body {
+    max-height: 400px;
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+}
+
+.tile {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.tile-icon {
+    margin-right: 1rem;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.tile-content {
+    flex: 1;
+    text-align: left;
+    /* Ensure text is aligned to the left */
+}
+
+.tile-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 550;
+    text-align: left;
+    /* Align title text to the left */
+}
+
+.tile-subtitle {
+    margin: 0;
+    font-size: 0.875rem;
+    font-family: 'Roboto Mono', monospace;
+    text-align: left;
+    /* Align subtitle text to the left */
+}
+
+emoji-picker {
+    --num-columns: 4;
+    --emoji-size: 12px;
+    --background: rgb(35, 35, 35);
+    width: 450px;
+    height: 220px;
+}
