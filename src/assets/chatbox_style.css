@@ -5,11 +5,14 @@
     /* Allow full width on small screens */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     /* Add some shadow for depth */
+   
 }
 
 .panel-body {
-    max-height: 400px;
+    max-height: 420px;
     overflow-y: auto;
+    
+    
     /* Enable vertical scrolling */
 }
 
@@ -58,10 +61,3 @@
     /* Align subtitle text to the left */
 }
 
-emoji-picker {
-    --num-columns: 4;
-    --emoji-size: 12px;
-    --background: rgb(35, 35, 35);
-    width: 450px;
-    height: 220px;
-}

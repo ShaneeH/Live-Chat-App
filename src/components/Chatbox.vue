@@ -1,15 +1,16 @@
 <template>
+
     <head>
         <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" />
         <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css" />
         <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
     </head>
-    
+
     <h3>Hi {{ name }} </h3>
     {{ timeString }}
     <br />
 
-    <!--Channel Selector-->
+    <!-- Channel Selector -->
     <div class="form-group">
         <select class="form-select" style="max-width: 300px; width: 100%;" v-model="selectedOption">
             <option value="" disabled selected>Pick a Channel</option>
@@ -25,34 +26,69 @@
         <div class="columns">
             <div class="column col-12 col-md-6 offset-md-3">
                 <div class="panel">
+                    <!-- Panel Header -->
                     <div class="panel-header">
                         <div class="panel-title h6">Welcome to {{ selectedOption }}</div>
-                        <p>people online : {{ activeUsers }}</p>
+                        <p>People online: {{ activeUsers }}</p>
                     </div>
+
+                    <!-- Messages Display Area -->
                     <div class="panel-body chat-scrollable">
-                        <div class="tile" v-for="msg in msgs" :key="msg.id">
-                            <div class="tile-icon">
-                                <figure class="avatar" v-bind:data-initial="msg.name"></figure>
+                        <div v-for="msg in msgs" :key="msg.id">
+
+                            <!--IF MESSAGE IS FROM CURRENT USER -->
+                            <div v-if="msg.id == id">
+                                <!-- Each Message -->
+                                <div class="tile">
+                                    <div class="tile-icon">
+                                        <figure class="avatar" v-bind:data-initial="msg.name"></figure>
+                                    </div>
+                                    <div class="tile-content">
+                                        <p class="tile-title text-bold">
+                                            {{ msg.name }} @ {{ msg.time }}
+                                        </p>
+                                        <p class="tile-subtitle">{{ msg.msg }}</p>
+                                    </div>
+                                </div>
+                                <!-- End of Each Message -->
                             </div>
-                            <div class="tile-content">
-                                <p class="tile-title text-bold">
-                                    {{ msg.name }} @ {{ msg.time}}
-                                </p>
-                                <p class="tile-subtitle">{{ msg.msg }}</p>
+                            <!-- END OF CURRENT USER MESSAGE-->
+
+                            <!--MESSAGES RECEIVED FROM OTHER USERS -->
+                            <div v-if="msg.id !== id">
+                                <!-- Each Message -->
+                                <div class="tile">
+                                    <div class="tile-icon">
+                                        <figure class="avatar" v-bind:data-initial="msg.name"></figure>
+                                    </div>
+                                    <div class="tile-content">
+                                        <p class="tile-title text-bold">
+                                            {{ msg.name }} @@ {{ msg.time }}
+                                        </p>
+                                        <p class="tile-subtitle">{{ msg.msg }}</p>
+                                    </div>
+                                </div>
+                                <!-- End of Each Message -->
                             </div>
+                            <!--END OF MESSAGES RECEIVED FROM OTHER USERS -->
                         </div>
                     </div>
+                    <!-- End of Messages Display Area -->
+
+                    <!-- Panel Footer (Input Area) -->
                     <div class="panel-footer">
                         <div class="input-group">
-                            <input class="form-input" v-model="txt" type="text" placeholder="Type Message Here :" @keydown.enter="sendMessageWrapper" @input="typing" />
+                            <input class="form-input" v-model="txt" type="text" placeholder="Type Message Here :"
+                                @keydown.enter="sendMessageWrapper" @input="typing" />
                             <button class="btn btn-primary input-group-btn" @click="sendMessageWrapper">
                                 Send
                             </button>
-                            <br />
                         </div>
-                        <div style="color: #ff6f6f; font-weight: 400; font-family: 'Roboto Mono', monospace;"> {{
-                            showError }} </div>
+                        <div style="color: #ff6f6f; font-weight: 400; font-family: 'Roboto Mono', monospace;">
+                            {{ showError }}
+                        </div>
                     </div>
+                    <!-- End of Panel Footer -->
                 </div>
             </div>
         </div>
@@ -94,11 +130,11 @@ onMounted(() => {
             console.log('Message received:', msg);
             msgs.value.push(msg);
         },
-        (data) => {
-            console.log('active users', data);
-            test();
-            activeUsers.value = data;
-        });
+            (data) => {
+                console.log('active users', data);
+                test();
+                activeUsers.value = data;
+            });
     }
 });
 
@@ -136,4 +172,6 @@ const sendMessageWrapper = () => {
 </script>
 
 
-<style scoped> @import './../assets/chatbox_style.css'; </style>
+<style scoped>
+@import './../assets/chatbox_style.css';
+</style>
