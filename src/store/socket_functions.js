@@ -6,12 +6,13 @@ import { ref } from 'vue';
 const socket = ref(null);
 const msgs = ref([]);
 
+//Connecting to the Socket
 export const socketConnect = (SERVER_URL, onMessageReceived, onUserCountUpdate) => {
     try {
         socket.value = io(SERVER_URL);
 
         socket.value.on('channel1', (msg) => {
-            console.log('Message received:', msg);
+            console.log('Message received = ', msg);
             if (onMessageReceived) onMessageReceived(msg);
         });
 
@@ -27,6 +28,7 @@ export const socketConnect = (SERVER_URL, onMessageReceived, onUserCountUpdate) 
 export const getSocket = () => socket;
 export const getMsgs = () => msgs;
 
+//Send Message to the Socket
 export const sendMessage = (id, name, age, user_input, showError) => {
     const socketInstance = socket.value;
 
@@ -54,3 +56,7 @@ export const sendMessage = (id, name, age, user_input, showError) => {
         console.error('Error sending message:', error);
     }
 };
+
+export function test(){
+    console.log("Hello from socket_functions");
+}

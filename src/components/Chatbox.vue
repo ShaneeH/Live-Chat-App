@@ -61,9 +61,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { localStorageStore } from '@/store/localstorage.js';
-import { sendMessage, socketConnect, getSocket, getMsgs } from '@/store/socket_functions.js'; // Correct import
+import { sendMessage, socketConnect, getSocket, getMsgs, test } from '@/store/socket_functions.js';
 
 const SERVER_URL = 'http://localhost:3000';
 const socket = getSocket(); // Get the socket reference
@@ -88,16 +88,26 @@ onMounted(() => {
     updateTime();
     setInterval(updateTime, 30000 / 4);
 
-    socketConnect(SERVER_URL, 
-        (msg) => {
+    // Check if socket is not already connected before establishing a new connection
+    if (!socket.value || !socket.value.connected) {
+        socketConnect(SERVER_URL, (msg) => {
             console.log('Message received:', msg);
             msgs.value.push(msg);
         },
         (data) => {
             console.log('active users', data);
+            test();
             activeUsers.value = data;
-        }
-    );
+        });
+    }
+});
+
+onUnmounted(() => {
+    // Cleanup socket connection on component unmount if needed
+    if (socket.value) {
+        socket.value.off(); // Remove all listeners
+        socket.value.disconnect(); // Optionally disconnect
+    }
 });
 
 const options = ['Channel 1', 'Channel 2', 'Channel 3'];
@@ -113,9 +123,17 @@ const typing = () => {
     }
 };
 
+// Wrapper to prevent potential duplicate sends
 const sendMessageWrapper = () => {
-    sendMessage(id, name, age, txt, showError);
+    if (txt.value.trim() !== '') {
+        sendMessage(id, name, age, txt, showError); // Function from the socket_functions.js file
+        txt.value = ''; // Clear the text input after sending
+    } else {
+        showError.value = 'Please enter a message!';
+    }
+    console.log("SENT MESSAGE");
 };
 </script>
+
 
 <style scoped> @import './../assets/chatbox_style.css'; </style>

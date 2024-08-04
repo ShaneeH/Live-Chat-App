@@ -37,14 +37,6 @@ onMounted(() => {
   displayChat.value = storedState === 'true'; // Set state based on localStorage
 });
 
-const url = 'http://localhost:3000/hello'; // Added http://
 
-axios.get(url)
-  .then(response => {
-    console.log(response.data); // Access the data from the response
-  })
-  .catch(error => {
-    console.error(error);
-  });
 
 </script>

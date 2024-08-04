@@ -1,7 +1,7 @@
 <template>
   <nav>
     <router-link to="/">Chat</router-link> |
-    <router-link to="/about">Profile</router-link>
+    <router-link to="/profile">Profile</router-link>
   </nav>
   <router-view/>
 </template>
