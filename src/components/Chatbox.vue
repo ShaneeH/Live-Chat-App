@@ -5,15 +5,13 @@
         <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css" />
         <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
     </head>
-
-    <h3>Hi {{ name }} </h3>
     {{ timeString }}
-    <br />
+
 
     <!-- Channel Selector -->
     <div class="form-group">
         <select class="form-select" style="max-width: 300px; width: 100%;" v-model="selectedOption">
-            <option value="" disabled selected>Pick a Channel</option>
+            <option value="" disabled>Pick a Channel</option>
             <option v-for="option in options" :key="option" :value="option">
                 {{ option }}
             </option>
@@ -21,6 +19,7 @@
         <button class="btn" @click="logSelectedOption">Connect</button>
     </div>
     <br />
+
     <!-- Chat Room -->
     <div class="container">
         <div class="columns">
@@ -35,50 +34,40 @@
                     <!-- Messages Display Area -->
                     <div class="panel-body chat-scrollable">
                         <div v-for="msg in msgs" :key="msg.id">
-
-                            <!--IF MESSAGE IS FROM CURRENT USER -->
-                            <div v-if="msg.id == id">
-                                <!-- Each Message -->
-                                <div class="tile">
-                                    <div class="tile-icon">
-                                        <figure class="avatar" v-bind:data-initial="msg.name"></figure>
-                                    </div>
-                                    <div class="tile-content">
-                                        <p class="tile-title text-bold">
-                                            {{ msg.name }} @ {{ msg.time }}
-                                        </p>
-                                        <p class="tile-subtitle">{{ msg.msg }}</p>
-                                    </div>
+                            <!-- IF MESSAGE IS FROM CURRENT USER -->
+                            <div class="tile current-user" v-if="msg.id === id">
+                                <div class="tile-content current-user">
+                                    <p class="tile-title text-bold current-user">
+                                        {{ msg.name }} @ {{ msg.time }}
+                                    </p>
+                                    <p class="tile-subtitle">{{ msg.msg }}</p>
                                 </div>
-                                <!-- End of Each Message -->
                             </div>
-                            <!-- END OF CURRENT USER MESSAGE-->
+                            <!-- END OF CURRENT USER MESSAGE -->
 
-                            <!--MESSAGES RECEIVED FROM OTHER USERS -->
-                            <div v-if="msg.id !== id">
-                                <!-- Each Message -->
-                                <div class="tile">
-                                    <div class="tile-icon">
-                                        <figure class="avatar" v-bind:data-initial="msg.name"></figure>
-                                    </div>
-                                    <div class="tile-content">
-                                        <p class="tile-title text-bold">
-                                            {{ msg.name }} @@ {{ msg.time }}
-                                        </p>
-                                        <p class="tile-subtitle">{{ msg.msg }}</p>
-                                    </div>
+                            <!-- MESSAGES RECEIVED FROM OTHER USERS -->
+                            <div class="tile other-user" v-if="msg.id !== id">
+                                <div class="tile-icon">
+                                    <figure class="avatar avatar-lg"><img src="https://picturepan2.github.io/spectre/img/avatar-3.png" alt="Avatar">
+                                    </figure>
                                 </div>
-                                <!-- End of Each Message -->
+                                <div class="tile-content other-user">
+                                    <p class="tile-title text-bold other-user">
+                                        {{ msg.name }} @@ {{ msg.time }}
+                                    </p>
+                                    <p class="tile-subtitle">{{ msg.msg }}</p>
+                                </div>
                             </div>
-                            <!--END OF MESSAGES RECEIVED FROM OTHER USERS -->
+                            <!-- END OF MESSAGES RECEIVED FROM OTHER USERS -->
                         </div>
                     </div>
                     <!-- End of Messages Display Area -->
 
-                    <!-- Panel Footer (Input Area) -->
+                    <!-- Panel Footer (Text Input Area) -->
                     <div class="panel-footer">
                         <div class="input-group">
                             <input class="form-input" v-model="txt" type="text" placeholder="Type Message Here :"
+                                style="font-weight: 400; font-family: 'Roboto Mono', monospace;"
                                 @keydown.enter="sendMessageWrapper" @input="typing" />
                             <button class="btn btn-primary input-group-btn" @click="sendMessageWrapper">
                                 Send

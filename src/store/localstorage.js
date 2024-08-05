@@ -1,7 +1,7 @@
 import { generateUniqueId } from '@/store/id_gen.js';
 
 export const localStorageStore = {
-  
+
   //Setter and Getters for the Users Profile
   setName(name) {
     try {
@@ -57,6 +57,44 @@ export const localStorageStore = {
       return localStorage.getItem('ID');
     } catch (error) {
       console.error('Error getting ID:', error);
+      return false;
+    }
+  },
+
+  setDateJoined() {
+    try {
+      const currentDate = new Date().toDateString();
+      localStorage.setItem('date_joined', currentDate);
+    } catch (error) {
+      console.error('Error setting Date:', error);
+      return false;
+
+    }
+  },
+  getDateJoined() {
+    try {
+      return localStorage.getItem('date_joined');
+    } catch (error) {
+      console.error('Error getting date_joined:', error);
+      return false;
+    }
+  } ,
+
+  setAvatar(avatar) {
+    try {
+      localStorage.setItem('avatar', avatar);
+    } catch (error) {
+      console.error('Error setting avatar :', error);
+      return false;
+
+    }
+  },
+
+  getAvatar() {
+    try {
+      return localStorage.getItem('avatar');
+    } catch (error) {
+      console.error('Error getting avatar:', error);
       return false;
     }
   }
