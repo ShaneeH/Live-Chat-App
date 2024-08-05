@@ -1,99 +1,123 @@
 <template>
-    <head>
-    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
-  </head>
 
-  <div>
 
-    <!-- Form to collect user data -->
-    <form v-if="showForm == true" @submit.prevent="saveData">
-      <h3>Welcome to GoChat!</h3>
-      <div>
-        <label for="name">Username:</label>
-        <input type="text" id="name" v-model="formData.name" required />
+  <div class="container grid-lg">
+    <h3 class="text-center my-2">Welcome to GoChat {{formData.name}}</h3>
+    <!-- Stepper Navigation -->
+    <ul class="step">
+      <li class="step-item" :class="{ active: step === 1, completed: step > 1 }">
+        <a href="#" @click.prevent="setStep(1)">Step 1</a>
+      </li>
+      <li class="step-item" :class="{ active: step === 2, completed: step > 2 }">
+        <a href="#" @click.prevent="setStep(2)">Step 2</a>
+      </li>
+      <li class="step-item" :class="{ active: step === 3, completed: step > 3 }">
+        <a href="#" @click.prevent="setStep(3)">Step 3</a>
+      </li>
+    </ul>
+
+    <!-- Username Input -->
+    <form v-if="step === 1" @submit.prevent="nextStep" class="form-horizontal mx-auto my-2">
+      <div class="form-group">
+        <label for="name" class="form-label">Username:</label>
+        <input
+          type="text"
+          id="name"
+          v-model="formData.name"
+          class="form-input"
+          required
+        />
       </div>
-      <div>
-        <label for="age">Age:</label>
-        <input type="number" id="age" v-model="formData.age" required />
+      <button type="submit" class="btn btn-primary">Next</button>
+    </form>
+
+    <!-- Age Input -->
+    <form v-if="step === 2" @submit.prevent="nextStep" class="form-horizontal mx-auto my-2">
+      <div class="form-group">
+        <label for="age" class="form-label">Age:</label>
+        <input
+          type="number"
+          id="age"
+          v-model="formData.age"
+          class="form-input"
+           style="max-width: 400px"
+          required
+        />
       </div>
-      <button type="submit">Begin Chatting</button>
+      <button type="submit" class="btn btn-primary">Next</button>
+    </form>
+
+    <!-- Avatar Selection -->
+    <form v-if="step === 3" @submit.prevent="saveData" class="form-horizontal mx-auto my-2">
+      <div class="form-group">
+        <label class="form-label">Choose Avatar:</label>
+        <div class="form-radio">
+          <div
+            v-for="(avatar, index) in avatars"
+            :key="index"
+            class="form-radio form-inline"
+          >
+            <label>
+              <input
+                type="radio"
+                name="avatar"
+                :value="avatar.src"
+                v-model="formData.avatar"
+                :id="'avatar-' + index"
+              />
+              <i class="form-icon"></i>
+              <figure class="avatar avatar-lg">
+                <img :src="avatar.src" alt="Avatar" />
+              </figure>
+            </label>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Begin</button>
     </form>
   </div>
-
-  <button @click="id">gen id</button>
-
-<form v-if="showForm == true" @submit.prevent="saveData">
-<div class="container grid-lg">
-    <div class="columns">
-      <div class="column col-6 col-mx-auto">
-        <form class="form-horizontal">
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-name">Username</label>
-            </div>
-            <div class="col-9 col-sm-12">
-              <input class="form-input" type="text" id="name" v-model="formData.name" placeholder="Name" required />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12">
-              <label class="form-label" for="input-email">Age</label>
-            </div>
-            <div class="col-9 col-sm-12">
-    
-              <input class="form-input" type="number" id="age" v-model="formData.age" required />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-3 col-sm-12"></div>
-            <div class="col-9 col-sm-12">
-              <button type="submit" class="btn btn-primary">Begin Chatting</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  
-</form>
-
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
-import Chatbox from './Chatbox.vue';
-import { localStorageStore } from '@/store/localstorage.js';
-import { generateUniqueId } from '@/store/id_gen.js';
+import { ref, defineEmits } from "vue";
+import { localStorageStore } from "@/store/localstorage.js";
+import { generateUniqueId } from "@/store/id_gen.js";
 
-const id = () => {
-  console.log("ll");
+const step = ref(1);
+const formData = ref({
+  name: "",
+  age: null,
+  avatar: ""
+});
+const emit = defineEmits(["msg"]);
+
+const avatars = ref([
+  { src: 'https://picturepan2.github.io/spectre/img/avatar-2.png' },
+  { src: 'https://picturepan2.github.io/spectre/img/avatar-3.png' },
+  { src: 'https://picturepan2.github.io/spectre/img/avatar-4.png' },
+  { src: 'https://picturepan2.github.io/spectre/img/avatar-5.png' },
+  { src: 'https://picturepan2.github.io/spectre/img/avatar-1.png' }
+]);
+
+function setStep(newStep) {
+  step.value = newStep;
 }
 
-const showForm = ref(true);
-const profile = ref({});
-const emit = defineEmits(['msg']);
+function nextStep() {
+  if (step.value === 1 && formData.value.name) {
+    step.value++;
+  } else if (step.value === 2 && formData.value.age) {
+    step.value++;
+  }
+}
 
-const formData = ref({
-  name: '',
-  age: null,
-});
 function saveData() {
-  console.log("btn clicked");
   const id = generateUniqueId();
-  console.log(id);
   localStorageStore.setName(formData.value.name);
   localStorageStore.setAge(formData.value.age);
   localStorageStore.setID(id);
   localStorageStore.setDateJoined();
-  emit('msg', 'true');
-
+  localStorageStore.setAvatar(formData.value.avatar);
+  emit("msg", "true");
 }
-
-
-
 </script>

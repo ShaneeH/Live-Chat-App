@@ -3,7 +3,6 @@
     <!-- Show SignupForm if displayChat is false -->
     <div v-if="!displayChat">
       <SignupForm @msg="getMSG" />
-      <p>Message from child: {{ msg }}</p>
     </div>
 </div>
     <!-- Optionally show ChatBox when displayChat is true -->
