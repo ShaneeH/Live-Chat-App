@@ -1,18 +1,13 @@
 <template>
-
-
-    {{ timeString }}
-
-
     <!-- Channel Selector -->
     <div class="form-group">
-        <select class="form-select" style="max-width: 300px; width: 100%;" v-model="selectedOption">
+        <select class="form-select" style="max-width: 300px; width: 100%;" v-model="selectedChannel">
             <option value="" disabled>Pick a Channel</option>
-            <option v-for="option in options" :key="option" :value="option">
+            <option v-for="option in channels" :key="option" :value="option">
                 {{ option }}
             </option>
         </select>
-        <button class="btn" @click="logSelectedOption">Connect</button>
+        <button class="btn" @click="logselectedChannel">Connect</button>
     </div>
     <br />
 
@@ -23,13 +18,14 @@
                 <div class="panel">
                     <!-- Panel Header -->
                     <div class="panel-header">
-                        <div class="panel-title h6">Welcome to {{ selectedOption }}</div>
+                        <div class="panel-title h6">Current Channel: {{ selectedChannel }}</div>
                         <p>People online: {{ activeUsers }}</p>
                     </div>
 
                     <!-- Messages Display Area -->
                     <div class="panel-body chat-scrollable">
                         <div v-for="msg in msgs" :key="msg.id">
+                            
                             <!-- IF MESSAGE IS FROM CURRENT USER -->
                             <div class="tile current-user" v-if="msg.id === id">
                                 <div class="tile-content current-user">
@@ -62,7 +58,7 @@
                     <!-- Panel Footer (Text Input Area) -->
                     <div class="panel-footer">
                         <div class="input-group">
-                            <input class="form-input" v-model="txt" type="text" placeholder="Type Message Here :"
+                            <input class="form-input" v-model="txt" type="text" placeholder="Type Message Here:"
                                 style="font-weight: 400; font-family: 'Roboto Mono', monospace;"
                                 @keydown.enter="sendMessageWrapper" @input="typing" />
                             <button class="btn btn-primary input-group-btn" @click="sendMessageWrapper">
@@ -97,6 +93,9 @@ const name = localStorageStore.getName() || '';
 const id = localStorageStore.getID();
 const age = 45; // Example age, you can adjust as needed
 
+const channels = ['channel1', 'channel2', 'boxing'];
+const selectedChannel = ref(channels[0]);
+
 const timeString = ref('');
 const updateTime = () => {
     const now = new Date();
@@ -109,18 +108,8 @@ onMounted(() => {
     updateTime();
     setInterval(updateTime, 30000 / 4);
 
-    // Check if socket is not already connected before establishing a new connection
-    if (!socket.value || !socket.value.connected) {
-        socketConnect(SERVER_URL, (msg) => {
-            console.log('Message received:', msg);
-            msgs.value.push(msg);
-        },
-            (data) => {
-                console.log('active users', data);
-                test();
-                activeUsers.value = data;
-            });
-    }
+    socket_join(selectedChannel.value); // Join the initial channel
+    console.log('The initial channel is:', selectedChannel.value);
 });
 
 onUnmounted(() => {
@@ -131,32 +120,57 @@ onUnmounted(() => {
     }
 });
 
-const options = ['Channel 1', 'Channel 2', 'Channel 3'];
-const selectedOption = ref('');
+function socket_join(channel) {
+    console.log("Joining channel:", channel);
+    
+    // Check if socket is not already connected before establishing a new connection
+    if (!socket.value || !socket.value.connected) {
+        socketConnect(SERVER_URL, (msg) => {
+            console.log('Message received:', msg);
+            if (msg.channel === channel) {
+                msgs.value.push(msg);
+            }
+        },
+        (data) => {
+            console.log('Active users:', data);
+            test();
+            activeUsers.value = data;
+        }, channel);
+    } else {
+        socket.value.on(channel, (msg) => {
+            console.log('Message received on:', channel, msg);
+            msgs.value.push(msg);
+        });
+    }
+}
 
-const logSelectedOption = () => {
-    console.log(selectedOption.value);
-};
-
-const typing = () => {
+const logselectedChannel = () => {
+    console.log('New channel selected:', selectedChannel.value);
+    msgs.value = []; // Clear previous messages
     if (socket.value) {
-        socket.value.emit('channel1_typing', localStorageStore.name);
+        socket.value.off(); // Remove previous listeners
+        socket_join(selectedChannel.value); // Join the new channel
     }
 };
 
 // Wrapper to prevent potential duplicate sends
 const sendMessageWrapper = () => {
     if (txt.value.trim() !== '') {
-        sendMessage(id, name, age, txt, showError); // Function from the socket_functions.js file
+        sendMessage(id, name, age, txt, showError, selectedChannel.value); // Function from the socket_functions.js file
         txt.value = ''; // Clear the text input after sending
     } else {
         showError.value = 'Please enter a message!';
     }
-    console.log("SENT MESSAGE");
+    console.log("Sent message");
+};
+
+const typing = () => {
+    if (socket.value) {
+        socket.value.emit(`${selectedChannel.value}_typing`, localStorageStore.name);
+    }
 };
 </script>
 
-
-<style scoped>
+<style>
 @import './../assets/chatbox_style.css';
 </style>

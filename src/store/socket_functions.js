@@ -7,11 +7,14 @@ const socket = ref(null);
 const msgs = ref([]);
 
 //Connecting to the Socket
-export const socketConnect = (SERVER_URL, onMessageReceived, onUserCountUpdate) => {
+//What I need to do :
+//Make this function run everytime the socket has changed 
+
+export const socketConnect = (SERVER_URL, onMessageReceived, onUserCountUpdate, channel) => {
     try {
         socket.value = io(SERVER_URL);
 
-        socket.value.on('channel1', (msg) => {
+        socket.value.on(channel, (msg) => {
             console.log('Message received = ', msg);
             if (onMessageReceived) onMessageReceived(msg);
         });
@@ -29,7 +32,7 @@ export const getSocket = () => socket;
 export const getMsgs = () => msgs;
 
 //Send Message to the Socket
-export const sendMessage = (id, name, age, user_input, showError) => {
+export const sendMessage = (id, name, age, user_input, showError , channel) => {
     const socketInstance = socket.value;
 
     if (!user_input || typeof user_input.value !== 'string' || user_input.value.trim() === '') {
@@ -47,7 +50,7 @@ export const sendMessage = (id, name, age, user_input, showError) => {
 
     try {
         if (socketInstance) {
-            socketInstance.emit('channel1', data);
+            socketInstance.emit(channel, data);
             console.log('Message sent:', data);
             user_input.value = '';  // Clear the input field after sending
             showError.value = '';   // Clear any previous error message
